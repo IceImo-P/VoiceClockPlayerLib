@@ -1,0 +1,3 @@
+rootProject.name = "VoiceClockPlayerLib"
+include ':app'
+include ':lib'

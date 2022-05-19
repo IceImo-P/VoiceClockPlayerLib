@@ -1,0 +1,51 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = '1.6.21'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    def githubProperties = new Properties()
+    githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+    repositories {
+        google()
+        mavenCentral()
+
+        maven {
+            name = "GitHubPackages-ImoyaAndroidUtil"
+            url = uri("https://maven.pkg.github.com/IceImo-P/ImoyaAndroidUtil")
+            credentials {
+                username = githubProperties.getProperty("imoya.gpr.user") ?: System.getenv("IMOYA_GPR_USER")
+                password = githubProperties.getProperty("imoya.gpr.token") ?: System.getenv("IMOYA_GPR_TOKEN")
+            }
+        }
+        maven {
+            name = "GitHubPackages-ImoyaAndroidMediaLib"
+            url = uri("https://maven.pkg.github.com/IceImo-P/ImoyaAndroidMediaLib")
+            credentials {
+                username = githubProperties.getProperty("imoya.gpr.user") ?: System.getenv("IMOYA_GPR_USER")
+                password = githubProperties.getProperty("imoya.gpr.token") ?: System.getenv("IMOYA_GPR_TOKEN")
+            }
+        }
+    }
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
